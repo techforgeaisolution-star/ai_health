@@ -1,0 +1,17 @@
+packages:
+  "framer-motion": "For smooth page transitions and result card reveals"
+  "react-hook-form": "For managing complex predictor forms with many fields"
+  "@hookform/resolvers": "Zod validation integration for forms"
+  "zod": "Schema validation for forms before API submission"
+  "clsx": "Utility for constructing className strings"
+  "tailwind-merge": "Utility for merging tailwind classes without conflicts"
+
+images:
+  - path: "artifacts/disease-predictor/public/images/medical-abstract-bg.png"
+    description: "Soft, minimalist abstract background with gentle waves and subtle geometric shapes in very light teal, pale blue, and white. Clean, clinical, and calming medical aesthetic. High key, low contrast."
+    aspect_ratio: "16:9"
+
+notes:
+  - Forms use react-hook-form with zod coercion since inputs are numeric
+  - API responses are simulated or handled by the provided orval hooks
+  - Relying on @workspace/api-client-react for all data fetching

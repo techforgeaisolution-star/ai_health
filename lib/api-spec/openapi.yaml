@@ -1,15 +1,16 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Multiple Disease Predictor API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: predict
+    description: Disease prediction operations
 paths:
   /healthz:
     get:
@@ -24,6 +25,85 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /predict/diabetes:
+    post:
+      operationId: predictDiabetes
+      tags: [predict]
+      summary: Predict diabetes
+      description: Predict whether a person has diabetes based on medical features
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DiabetesInput"
+      responses:
+        "200":
+          description: Prediction result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PredictionResult"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /predict/heart:
+    post:
+      operationId: predictHeart
+      tags: [predict]
+      summary: Predict heart disease
+      description: Predict whether a person has heart disease based on medical features
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HeartInput"
+      responses:
+        "200":
+          description: Prediction result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PredictionResult"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /predict/parkinsons:
+    post:
+      operationId: predictParkinsons
+      tags: [predict]
+      summary: Predict Parkinson's disease
+      description: Predict whether a person has Parkinson's disease based on voice measurements
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ParkinsonsInput"
+      responses:
+        "200":
+          description: Prediction result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PredictionResult"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +114,219 @@ components:
       required:
         - status
 
+    PredictionResult:
+      type: object
+      properties:
+        prediction:
+          type: integer
+          description: 0 = negative, 1 = positive
+        label:
+          type: string
+          description: Human-readable result label
+        confidence:
+          type: number
+          description: Confidence score between 0 and 1
+        message:
+          type: string
+          description: Descriptive result message
+      required:
+        - prediction
+        - label
+        - message
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: string
+      required:
+        - error
+
+    DiabetesInput:
+      type: object
+      properties:
+        pregnancies:
+          type: number
+          description: Number of times pregnant
+        glucose:
+          type: number
+          description: Plasma glucose concentration
+        bloodPressure:
+          type: number
+          description: Diastolic blood pressure (mm Hg)
+        skinThickness:
+          type: number
+          description: Triceps skin fold thickness (mm)
+        insulin:
+          type: number
+          description: 2-Hour serum insulin (mu U/ml)
+        bmi:
+          type: number
+          description: Body mass index
+        diabetesPedigreeFunction:
+          type: number
+          description: Diabetes pedigree function
+        age:
+          type: number
+          description: Age (years)
+      required:
+        - pregnancies
+        - glucose
+        - bloodPressure
+        - skinThickness
+        - insulin
+        - bmi
+        - diabetesPedigreeFunction
+        - age
+
+    HeartInput:
+      type: object
+      properties:
+        age:
+          type: number
+          description: Age in years
+        sex:
+          type: number
+          description: Sex (1 = male, 0 = female)
+        cp:
+          type: number
+          description: Chest pain type (0-3)
+        trestbps:
+          type: number
+          description: Resting blood pressure (mm Hg)
+        chol:
+          type: number
+          description: Serum cholestoral in mg/dl
+        fbs:
+          type: number
+          description: Fasting blood sugar > 120 mg/dl (1 = true, 0 = false)
+        restecg:
+          type: number
+          description: Resting electrocardiographic results (0-2)
+        thalach:
+          type: number
+          description: Maximum heart rate achieved
+        exang:
+          type: number
+          description: Exercise induced angina (1 = yes, 0 = no)
+        oldpeak:
+          type: number
+          description: ST depression induced by exercise
+        slope:
+          type: number
+          description: Slope of peak exercise ST segment (0-2)
+        ca:
+          type: number
+          description: Number of major vessels colored by fluoroscopy (0-3)
+        thal:
+          type: number
+          description: Thalassemia (0 = normal, 1 = fixed defect, 2 = reversable defect)
+      required:
+        - age
+        - sex
+        - cp
+        - trestbps
+        - chol
+        - fbs
+        - restecg
+        - thalach
+        - exang
+        - oldpeak
+        - slope
+        - ca
+        - thal
+
+    ParkinsonsInput:
+      type: object
+      properties:
+        mdvpFo:
+          type: number
+          description: MDVP Fo(Hz) - Average vocal fundamental frequency
+        mdvpFhi:
+          type: number
+          description: MDVP Fhi(Hz) - Maximum vocal fundamental frequency
+        mdvpFlo:
+          type: number
+          description: MDVP Flo(Hz) - Minimum vocal fundamental frequency
+        mdvpJitter:
+          type: number
+          description: MDVP Jitter(%)
+        mdvpJitterAbs:
+          type: number
+          description: MDVP Jitter(Abs)
+        mdvpRap:
+          type: number
+          description: MDVP RAP
+        mdvpPpq:
+          type: number
+          description: MDVP PPQ
+        jitterDdp:
+          type: number
+          description: Jitter DDP
+        mdvpShimmer:
+          type: number
+          description: MDVP Shimmer
+        mdvpShimmerDb:
+          type: number
+          description: MDVP Shimmer(dB)
+        shimmerApq3:
+          type: number
+          description: Shimmer APQ3
+        shimmerApq5:
+          type: number
+          description: Shimmer APQ5
+        mdvpApq:
+          type: number
+          description: MDVP APQ
+        shimmerDda:
+          type: number
+          description: Shimmer DDA
+        nhr:
+          type: number
+          description: NHR - Noise-to-Harmonics Ratio
+        hnr:
+          type: number
+          description: HNR - Harmonics-to-Noise Ratio
+        rpde:
+          type: number
+          description: RPDE - Recurrence Period Density Entropy
+        dfa:
+          type: number
+          description: DFA - Detrended Fluctuation Analysis
+        spread1:
+          type: number
+          description: Spread1 - nonlinear measure
+        spread2:
+          type: number
+          description: Spread2 - nonlinear measure
+        d2:
+          type: number
+          description: D2 - nonlinear dynamical complexity
+        ppe:
+          type: number
+          description: PPE - Pitch Period Entropy
+      required:
+        - mdvpFo
+        - mdvpFhi
+        - mdvpFlo
+        - mdvpJitter
+        - mdvpJitterAbs
+        - mdvpRap
+        - mdvpPpq
+        - jitterDdp
+        - mdvpShimmer
+        - mdvpShimmerDb
+        - shimmerApq3
+        - shimmerApq5
+        - mdvpApq
+        - shimmerDda
+        - nhr
+        - hnr
+        - rpde
+        - dfa
+        - spread1
+        - spread2
+        - d2
+        - ppe
