@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Stethoscope, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,15 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { href: "/", label: "Home" },
@@ -16,7 +25,14 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
+    <header 
+      className={cn(
+        "sticky top-0 z-50 w-full transition-all duration-300",
+        scrolled 
+          ? "bg-background/95 backdrop-blur-xl border-b border-border shadow-md" 
+          : "bg-background/80 backdrop-blur-md border-b border-border/50"
+      )}
+    >
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -25,7 +41,7 @@ export function Navbar() {
               <Stethoscope size={20} />
             </div>
             <div>
-              <h1 className="font-display font-bold text-lg tracking-tight text-foreground leading-none">MedPredict</h1>
+              <h1 className="font-display font-bold text-lg tracking-tight text-primary leading-none">MedPredict</h1>
               <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">AI Diagnostics</p>
             </div>
           </Link>
@@ -39,11 +55,14 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    isActive ? "text-primary" : "text-muted-foreground"
+                    "text-sm font-medium transition-all relative py-2",
+                    isActive ? "text-primary" : "text-muted-foreground hover:text-primary"
                   )}
                 >
                   {item.label}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary rounded-full" />
+                  )}
                 </Link>
               );
             })}
@@ -53,7 +72,15 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             <div className="hidden md:block">
               <Link href="/diabetes">
-                <Button variant="default" className="shadow-lg shadow-primary/20">Try Now</Button>
+                <Button variant="default" className="shadow-lg shadow-primary/20 relative pr-4">
+                  <span className="flex items-center gap-2">
+                    Try Now
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                  </span>
+                </Button>
               </Link>
             </div>
             <button
@@ -79,7 +106,7 @@ export function Navbar() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
                     "block rounded-md px-3 py-2 text-base font-medium",
-                    isActive ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
+                    isActive ? "bg-primary/10 text-primary border-l-2 border-primary" : "text-foreground hover:bg-muted"
                   )}
                 >
                   {item.label}
@@ -88,7 +115,15 @@ export function Navbar() {
             })}
             <div className="pt-4">
               <Link href="/diabetes" onClick={() => setMobileMenuOpen(false)}>
-                <Button className="w-full">Try Now</Button>
+                <Button className="w-full relative">
+                  <span className="flex items-center justify-center gap-2">
+                    Try Now
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                  </span>
+                </Button>
               </Link>
             </div>
           </div>

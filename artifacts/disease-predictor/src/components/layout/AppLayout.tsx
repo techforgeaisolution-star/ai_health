@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
-import { Activity, HeartPulse, Brain, Stethoscope } from "lucide-react";
+import { Activity, HeartPulse, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -13,9 +13,9 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [location] = useLocation();
 
   const navItems = [
-    { href: "/diabetes", label: "Diabetes", icon: Activity, description: "Glucose & Insulin tracking" },
-    { href: "/heart", label: "Heart Disease", icon: HeartPulse, description: "Cardiovascular analysis" },
-    { href: "/parkinsons", label: "Parkinson's", icon: Brain, description: "Voice measurement analysis" },
+    { href: "/diabetes", label: "Diabetes", icon: Activity, description: "Glucose & Insulin tracking", dotColor: "bg-amber-500" },
+    { href: "/heart", label: "Heart Disease", icon: HeartPulse, description: "Cardiovascular analysis", dotColor: "bg-rose-500" },
+    { href: "/parkinsons", label: "Parkinson's", icon: Brain, description: "Voice measurement analysis", dotColor: "bg-violet-500" },
   ];
 
   const currentItem = navItems.find((item) => location.startsWith(item.href)) || navItems[0];
@@ -38,7 +38,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 key={item.href} 
                 href={item.href}
                 className={cn(
-                  "group flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 relative overflow-hidden",
+                  "group flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 relative overflow-hidden",
                   isActive 
                     ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 scale-[1.02]" 
                     : "text-foreground hover:bg-accent hover:text-accent-foreground hover:scale-[1.01]"
@@ -53,8 +53,11 @@ export function AppLayout({ children }: AppLayoutProps) {
                 )}>
                   <item.icon size={20} className={isActive ? "text-white" : "text-primary"} />
                 </div>
-                <div>
-                  <div className="font-semibold">{item.label}</div>
+                <div className="flex-1">
+                  <div className="font-semibold flex items-center justify-between">
+                    {item.label}
+                    <span className={cn("w-2 h-2 rounded-full", item.dotColor)} />
+                  </div>
                   <div className={cn(
                     "text-xs mt-0.5",
                     isActive ? "text-primary-foreground/80" : "text-muted-foreground group-hover:text-accent-foreground/70"
@@ -80,8 +83,9 @@ export function AppLayout({ children }: AppLayoutProps) {
       <main className="flex-1 flex flex-col min-w-0 md:max-h-[calc(100vh-64px)] overflow-y-auto">
         <header className="hidden md:flex h-20 flex-shrink-0 items-center px-10 border-b border-border/50 bg-background/50 backdrop-blur-md sticky top-0 z-10">
           <div>
-            <h2 className="text-2xl font-display font-bold text-foreground">
+            <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-3">
               {currentItem?.label} Assessment
+              <span className={cn("w-2.5 h-2.5 rounded-full inline-block", currentItem?.dotColor)} />
             </h2>
             <p className="text-sm text-muted-foreground">Enter patient data below to generate an AI prediction</p>
           </div>
@@ -89,8 +93,9 @@ export function AppLayout({ children }: AppLayoutProps) {
         
         <div className="flex-1 p-4 sm:p-6 md:p-10 container max-w-6xl mx-auto">
           <div className="md:hidden mb-6">
-            <h2 className="text-2xl font-display font-bold text-foreground">
+            <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
               {currentItem?.label} Assessment
+              <span className={cn("w-2 h-2 rounded-full inline-block", currentItem?.dotColor)} />
             </h2>
             <p className="text-sm text-muted-foreground">Enter patient data below to generate an AI prediction</p>
           </div>
