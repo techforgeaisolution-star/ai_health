@@ -1,0 +1,99 @@
+import React, { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { Stethoscope, Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+export function Navbar() {
+  const [location] = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    { href: "/", label: "Home" },
+    { href: "/diabetes", label: "Diabetes" },
+    { href: "/heart", label: "Heart Disease" },
+    { href: "/parkinsons", label: "Parkinson's" },
+  ];
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white shadow-lg shadow-primary/20 transition-transform group-hover:scale-105">
+              <Stethoscope size={20} />
+            </div>
+            <div>
+              <h1 className="font-display font-bold text-lg tracking-tight text-foreground leading-none">MedPredict</h1>
+              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">AI Diagnostics</p>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-6">
+            {navItems.map((item) => {
+              const isActive = location === item.href || (item.href !== "/" && location.startsWith(item.href));
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    isActive ? "text-primary" : "text-muted-foreground"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* CTA & Mobile Toggle */}
+          <div className="flex items-center gap-4">
+            <div className="hidden md:block">
+              <Link href="/diabetes">
+                <Button variant="default" className="shadow-lg shadow-primary/20">Try Now</Button>
+              </Link>
+            </div>
+            <button
+              className="md:hidden p-2 text-foreground"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-border/50 bg-background pb-4 pt-2 shadow-xl">
+          <div className="space-y-1 px-4">
+            {navItems.map((item) => {
+              const isActive = location === item.href || (item.href !== "/" && location.startsWith(item.href));
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "block rounded-md px-3 py-2 text-base font-medium",
+                    isActive ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+            <div className="pt-4">
+              <Link href="/diabetes" onClick={() => setMobileMenuOpen(false)}>
+                <Button className="w-full">Try Now</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}

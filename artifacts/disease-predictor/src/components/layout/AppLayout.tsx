@@ -2,6 +2,8 @@ import React, { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { Activity, HeartPulse, Brain, Stethoscope } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -19,24 +21,16 @@ export function AppLayout({ children }: AppLayoutProps) {
   const currentItem = navItems.find((item) => location.startsWith(item.href)) || navItems[0];
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row bg-background/80 backdrop-blur-3xl relative z-0">
+    <div className="min-h-screen w-full flex flex-col bg-background/80 backdrop-blur-3xl relative z-0">
+      <Navbar />
       
-      {/* Sidebar */}
-      <aside className="w-full md:w-80 flex-shrink-0 border-r border-border/50 bg-card/50 backdrop-blur-xl md:min-h-screen flex flex-col shadow-2xl shadow-primary/5 relative z-10">
-        <div className="p-8 flex items-center gap-3 border-b border-border/50">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white shadow-lg shadow-primary/20">
-            <Stethoscope size={24} />
-          </div>
-          <div>
-            <h1 className="font-display font-bold text-xl tracking-tight text-foreground leading-tight">MedPredict</h1>
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">AI Diagnostics</p>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          <div className="px-4 py-3 mb-2">
-            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Diagnostic Tools</h2>
-          </div>
+      <div className="flex-1 flex flex-col md:flex-row w-full">
+        {/* Sidebar */}
+        <aside className="w-full md:w-80 flex-shrink-0 border-r border-border/50 bg-card/50 backdrop-blur-xl md:min-h-[calc(100vh-64px)] flex flex-col shadow-2xl shadow-primary/5 relative z-10">
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+            <div className="px-4 py-3 mb-2">
+              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Diagnostic Tools</h2>
+            </div>
           {navItems.map((item) => {
             const isActive = location.startsWith(item.href) || (location === "/" && item.href === "/diabetes");
             return (
@@ -83,8 +77,8 @@ export function AppLayout({ children }: AppLayoutProps) {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 max-h-screen overflow-y-auto">
-        <header className="hidden md:flex h-20 items-center px-10 border-b border-border/50 bg-background/50 backdrop-blur-md sticky top-0 z-10">
+      <main className="flex-1 flex flex-col min-w-0 md:max-h-[calc(100vh-64px)] overflow-y-auto">
+        <header className="hidden md:flex h-20 flex-shrink-0 items-center px-10 border-b border-border/50 bg-background/50 backdrop-blur-md sticky top-0 z-10">
           <div>
             <h2 className="text-2xl font-display font-bold text-foreground">
               {currentItem?.label} Assessment
@@ -103,6 +97,9 @@ export function AppLayout({ children }: AppLayoutProps) {
           {children}
         </div>
       </main>
+      </div>
+
+      <Footer />
     </div>
   );
 }
